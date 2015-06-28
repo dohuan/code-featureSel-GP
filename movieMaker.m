@@ -3,31 +3,38 @@ clc
 close all
 %%
 
-features(1).name = 'ABS_FFT';
-features(1).data_type{1} = 'out_fix';
-features(1).nf = 64; % for one axis, actual nf = nf*2
-
-features(2).name = 'HISTOGRAM';
-features(2).data_type{1} = 'out_fix';
-features(2).nf = 64;
-
-features(3).name = 'WAVELET';
-features(3).data_type{1} = 'out_fix';
-features(3).nf = 72;
-
-outputCount = 1;
-for i=1:size(features,2)
-    for j=1:size(features(i).data_type,2)
-        features_temp.name = features(i).name;
-        features_temp.nf = features(i).nf;
-        features_temp.data_type = features(i).data_type{j};
-        output_temp = main_function(features_temp);
-        output(outputCount) = output_temp;
-        outputCount = outputCount + 1;
-    end
+folderpath = './data/imagesAcuraRun/merged(K_L_fixedAngle)/';
+load([folderpath 'location.mat']);
+locationBuffer = location;
+clear location
+dataSize = size(locationBuffer,1);
+origin_m = [min(locationBuffer(:,1)) min(locationBuffer(:,2))]; %gps coor of the origin of meter coor
+for i=1:dataSize
+    % -- lldistkm([lat1 long1],[lat2 long2])
+    [Long_m_tmp,~] = lldistkm([origin_m(1,2) locationBuffer(i,1)],...
+        [origin_m(2) origin_m(1)]);
+    [Lat_m_tmp,~]  = lldistkm([locationBuffer(i,2) origin_m(1,1)],...
+        [origin_m(2) origin_m(1)]);
+    location(i,:)  = 1000*[Long_m_tmp Lat_m_tmp];
 end
+crossvalidation_index = 1:5:dataSize; % we choose 10 percent with jumping 10 step each time
+test_index = crossvalidation_index + 1; % we keep 10% cross validation data
+test_features = train_features(test_index,:);
+test_location = train_location(test_index,:);
+crossvalidation_features = train_features(crossvalidation_index,:);
+crossvalidation_location = train_location(crossvalidation_index,:);
 
-n_case = size(output,2);
+train_location = location;
+train_location([test_index crossvalidation_index],:) = []; % remove test data from trainig dataset
 
-save('./result/movie_run_062815');
+filename='grpLASSO_indoor_animated.avi';
+vid = VideoWriter(filename);
+vid.Quality = 100;
+vid.FrameRate = 20;
+open(vid)
+frameRate = .05; % seconds between frames
 
+load ./result/ABS_FFT-out_fix-data Predicted_Layer_Map
+
+
+close(vid)
