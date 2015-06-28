@@ -6,8 +6,8 @@ paper_name = 'ACC'; % ACC, IMAVIS
 
 if strcmp(paper_name,'ACC')
     tic
-    addpath(genpath('./matlabPyrTools/')) % Pyr toolbox
-    addpath(genpath('./gpml-matlab/'))    % GPML toolbox
+    %addpath(genpath('./matlabPyrTools/')) % Pyr toolbox
+    %addpath(genpath('./gpml-matlab/'))    % GPML toolbox
     
     features(1).name = 'ABS_FFT';
     features(1).data_type{1} = 'in';
@@ -67,8 +67,6 @@ if strcmp(paper_name,'IMAVIS')
     addpath(genpath('./gpml-matlab/'))    % GPML toolbox
     % ----------------- folder path ------------------------
     folderpath(1).path = './images2/';
-    % folderpath(2).path = './imagesAcuraRun/merged(O_P)/';
-    % folderpath(3).path = './imagesAcuraRun/merged(O_P_fixedAngle)/';
     folderpath(2).path = './imagesAcuraRun/merged(K_L)/';
     folderpath(3).path = './imagesAcuraRun/merged(K_L_fixedAngle)/';
     
