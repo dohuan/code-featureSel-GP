@@ -64,43 +64,20 @@ n_train = size(train_location,1);
 n_test  = size(test_location,1);
 
 load ./result/output_movie
-figure(1);
-% ----------
-subplot(4,4,4)
-surf(output(1).GP_field_evol(:,:,1),'EdgeColor','none');
-zlim([-2 2]);
-view(40,30);
-title('{\color{red}\bf FFT}')
-set(gca,'NextPlot','replaceChildren');
-% ----------
-subplot(4,4,8)
-surf(output(2).GP_field_evol(:,:,1),'EdgeColor','none');
-zlim([-2 2]);
-view(40,30);
-title('{\color{blue}\bf HIST}')
-set(gca,'NextPlot','replaceChildren');
-% ----------
-subplot(4,4,12)
-surf(output(3).GP_field_evol(:,:,1),'EdgeColor','none');
-zlim([-2 2]);
-view(40,30);
-title('{\bf SP}')
-set(gca,'NextPlot','replaceChildren');
 
-
-% filename='./result/grpLASSO_indoor_animated.avi';
-% vid = VideoWriter(filename);
-% vid.Quality = 100;
-% vid.FrameRate = 5;
-% open(vid)
-
+dataSize = size(output(3).GP_field_evol,3);
+figure('Color',[1 1 1]);
+vid = VideoWriter('./result/grpLASSO_indoor_animated.avi');
+vid.Quality = 100;
+vid.FrameRate = 10;
+open(vid)
+set(gcf,'renderer','zbuffer')
 
 for i=1:n_train
     s = [folderpath num2str(train_index(i)) '-d.jpg'];
     img = imread(s);
     
     figure(1)
-    movegui(figure(1),'northwest');
     % ----------
     h1 = subplot(4,4,[1 2 3 5 6 7 9 10 11]);
     hold on
@@ -121,70 +98,61 @@ for i=1:n_train
     zlim([-2 2]);
     view(40,30);
     title('{\color{red}\bf FFT}')
-    %set(gca,'NextPlot','replaceChildren');
     % ----------
     subplot(4,4,8)
     surf(output(2).GP_field_evol(:,:,i),'EdgeColor','none');
     zlim([-2 2]);
     view(40,30);
     title('{\color{blue}\bf HIST}')
-    %set(gca,'NextPlot','replaceChildren');
     % ----------
     subplot(4,4,12)
     surf(output(3).GP_field_evol(:,:,i),'EdgeColor','none');
     zlim([-2 2]);
     view(40,30);
     title('{\bf SP}')
-    %set(gca,'NextPlot','replaceChildren');
     % ----------
     subplot(4,4,[13 14 15 16])
     imshow(img);
     title('Panoramic image') 
     
-    set(gca,'NextPlot','replaceChildren');
-    %writeVideo(vid,getframe(gcf));
-    M(i) = getframe(gcf);
+    writeVideo(vid,getframe(gcf));
 end 
 
-% cla(h1);
-% for i=1:n_test
-%     s = [folderpath num2str(test_index(i)) '-d.jpg'];
-%     img = imread(s);
-%     
-%     figure(1)
-%     movegui(figure(1),'northwest');
-%     % ----------
-%     subplot(4,4,[1 2 3 5 6 7 9 10 11])
-%     hold on
-%     if(i==1)
-%         plot(output(1).BE_test(i,1),output(1).BE_test(i,2),'ro','LineWidth',2.5);
-%         plot(output(2).BE_test(i,1),output(2).BE_test(i,2),'bo','LineWidth',2.5);
-%         plot(output(3).BE_test(i,1),output(3).BE_test(i,2),'ko','LineWidth',2.5);
-%         
-%         plot(output(1).test(i,1),output(1).test(i,2),'ks','LineWidth',2.5);
-%     else
-%         plot([output(1).BE_test(i-1,1) output(1).BE_test(i,1)],...
-%              [output(1).BE_test(i-1,2) output(1).BE_test(i,2)],'ro','LineWidth',2.5);
-%         plot([output(2).BE_test(i-1,1) output(2).BE_test(i,1)],...
-%              [output(2).BE_test(i-1,2) output(2).BE_test(i,2)],'bo','LineWidth',2.5);
-%         plot([output(3).BE_test(i-1,1) output(3).BE_test(i,1)],...
-%              [output(3).BE_test(i-1,2) output(3).BE_test(i,2)],'ko','LineWidth',2.5);
-%          
-%         plot([output(3).test(i-1,1) output(3).test(i,1)],...
-%              [output(3).test(i-1,2) output(3).test(i,2)],'ks','LineWidth',2.5);
-%     end
-%     hold off
-%     box on
-%     title('TEST PHASE')
-%     % ----------
-%     subplot(4,4,[13 14 15 16])
-%     imshow(img);
-%     title('Panoramic image') 
-%     
-%     %writeVideo(vid,getframe(gcf));
-%     M(i+n_train) = getframe(gcf);
-% end
+cla(h1);
+for i=1:n_test
+    s = [folderpath num2str(test_index(i)) '-d.jpg'];
+    img = imread(s);
+    
+    figure(1)
+    % ----------
+    subplot(4,4,[1 2 3 5 6 7 9 10 11])
+    hold on
+    if(i==1)
+        plot(output(1).BE_test(i,1),output(1).BE_test(i,2),'ro','LineWidth',2.5);
+        plot(output(2).BE_test(i,1),output(2).BE_test(i,2),'bo','LineWidth',2.5);
+        plot(output(3).BE_test(i,1),output(3).BE_test(i,2),'ko','LineWidth',2.5);
+        
+        plot(output(1).test(i,1),output(1).test(i,2),'ks','LineWidth',2.5);
+    else
+        plot([output(1).BE_test(i-1,1) output(1).BE_test(i,1)],...
+             [output(1).BE_test(i-1,2) output(1).BE_test(i,2)],'ro','LineWidth',2.5);
+        plot([output(2).BE_test(i-1,1) output(2).BE_test(i,1)],...
+             [output(2).BE_test(i-1,2) output(2).BE_test(i,2)],'bo','LineWidth',2.5);
+        plot([output(3).BE_test(i-1,1) output(3).BE_test(i,1)],...
+             [output(3).BE_test(i-1,2) output(3).BE_test(i,2)],'ko','LineWidth',2.5);
+         
+        plot([output(3).test(i-1,1) output(3).test(i,1)],...
+             [output(3).test(i-1,2) output(3).test(i,2)],'ks','LineWidth',2.5);
+    end
+    hold off
+    box on
+    title('TEST PHASE')
+    % ----------
+    subplot(4,4,[13 14 15 16])
+    imshow(img);
+    title('Panoramic image') 
+    
+    writeVideo(vid,getframe(gcf));
+end
 
-movie2avi(M,'./result/grpLASSO_indoor_animated.avi','compression','none',...
-    'fps',25,'quality',100);
-%close(vid)
+close(vid)
