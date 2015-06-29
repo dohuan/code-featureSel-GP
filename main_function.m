@@ -32,12 +32,13 @@ output.name = [features.name '-' ...
     features.nf,...
     mode_temp,...
     folderpath);
+
 % --- adding noise to location here, ONLY for Case 1 nosy sampling loc ---
-noiseStd = 1;
-noiseAddedX = noiseStd*randn(size(train_location,1),1);
-noiseAddedY = noiseStd*randn(size(train_location,1),1);
-train_location(:,1) = train_location(:,1) + noiseAddedX;
-train_location(:,2) = train_location(:,2) + noiseAddedY;
+%noiseStd = 1;
+%noiseAddedX = noiseStd*randn(size(train_location,1),1);
+%noiseAddedY = noiseStd*randn(size(train_location,1),1);
+%train_location(:,1) = train_location(:,1) + noiseAddedX;
+%train_location(:,2) = train_location(:,2) + noiseAddedY;
 
 if (mode_temp==0)
     option.x_limit = [1 23];     % The limit on the x cordinate will be set here
